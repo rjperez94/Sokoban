@@ -9,7 +9,7 @@
 5. Put directory where you downloaded ZIP in `From archive file`
 6. Put `ProjectName/src` in `Into folder`
 7. Click `Finish`
-8. Move all the files (not the directory) in the `images` and `levels` directory from {ProjectName}/src to the root of your Java Project i.e. {ProjectName}
+8. Move all the files (not the directory) in the `images` and `levels` directory from `{ProjectName}/src` to the root of your `Java Project` i.e. `{ProjectName}`
 
 ### Linking the UI Library
 
