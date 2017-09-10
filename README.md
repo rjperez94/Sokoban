@@ -1,5 +1,9 @@
 # Sokoban
 
+## Overview
+
+Sokoban is a computer game of the puzzle variety that was created in 1980, and is available on many computer platforms. The game involves controlling a worker in a warehouse who has to push boxes around the warehouse to get them onto their destination spots. The worker can only push one box at at time, and cannot pull boxes. It is easy for the player to get stuck in a deadlock where it is no longer possible to move some of the boxes. Some of the levels are extremely difficult to solve.
+
 ## Compiling Java files using Eclipse IDE
 
 1. Download this repository as ZIP
