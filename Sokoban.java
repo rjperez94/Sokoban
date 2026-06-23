@@ -1,4 +1,6 @@
 import ecs100.*;
+
+import javax.swing.*;
 import java.util.*;
 import java.io.*;
 
@@ -6,6 +8,9 @@ import java.io.*;
  */
 
 public class Sokoban implements UIButtonListener, UIKeyListener, UIMouseListener {
+    // Directories
+    private File IMAGES_DIR;
+    private File LEVELS_DIR;
 
     // Fields
     private Square[][] squares;   // the array describing the current warehouse.
@@ -29,6 +34,9 @@ public class Sokoban implements UIButtonListener, UIKeyListener, UIMouseListener
      *  and set up the GUI
      */
     public Sokoban() {
+        IMAGES_DIR = chooseDir("Select images directory", "box.gif");
+        LEVELS_DIR = chooseDir("Select levels directory", "warehouse1.txt");
+
         UI.addButton("New Level", this);
         UI.addButton("Restart", this);
 
@@ -48,6 +56,43 @@ public class Sokoban implements UIButtonListener, UIKeyListener, UIMouseListener
         load();
     }
 
+    private File chooseDir(final String dialogTitle, final String testFileName) {
+        File test = null;
+
+        // Load required images using a JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
+
+        // set up the file chooser
+        fileChooser.setCurrentDirectory(new File("."));
+        fileChooser.setDialogTitle(dialogTitle);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        // run the file chooser and check the user didn't hit cancel
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            // get the files in the selected directory and match them to
+            // the files we need.
+            File directory = fileChooser.getSelectedFile();
+            File[] files = directory.listFiles();
+
+            for (File f : files) {
+                if (f.getName().equals(testFileName)) {
+                    test = f;
+                }
+            }
+
+            // check none of the files are missing, and call the load
+            // method in your code.
+            if (test == null) {
+                JOptionPane.showMessageDialog(null, "Directory does not contain correct files", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            } else {
+                return new File(test.getParent());    //  Set directory
+            }
+        }
+        return null;
+    }
+
     /** Respond to button presses */
     public void buttonPerformed(String button) {
         if (button.equals("New Level")) {
@@ -58,8 +103,13 @@ public class Sokoban implements UIButtonListener, UIKeyListener, UIMouseListener
             load();
         else if (button.equals("Undo"))
             undo();
-        else 
+        else {
             doAction(button);
+            // Check if solved
+            if (isSolved()) {
+                UI.println("Level solved!");
+            }
+        }
     }
 
     /** Respond to key actions */
@@ -140,7 +190,7 @@ public class Sokoban implements UIButtonListener, UIKeyListener, UIMouseListener
 
     /** Load a grid of squares (and agent position) from a file */
     public void load() {
-        File f = new File("warehouse" + level + ".txt");
+        File f = new File(LEVELS_DIR.getAbsolutePath() + File.separator + "warehouse" + level + ".txt");
         if (f.exists()) {
             List<String> lines = new ArrayList<String>();
             try {
@@ -253,18 +303,18 @@ public class Sokoban implements UIButtonListener, UIKeyListener, UIMouseListener
 
         // square type to image of square
         imageMapping = new HashMap<Square, String>();
-        imageMapping.put(Square.empty, "empty.gif");
-        imageMapping.put(Square.wall, "wall.gif");
-        imageMapping.put(Square.box, "box.gif");
-        imageMapping.put(Square.shelf, "shelf.gif");
-        imageMapping.put(Square.boxOnShelf, "boxOnShelf.gif");
+        imageMapping.put(Square.empty, IMAGES_DIR.getAbsolutePath() + File.separator + "empty.gif");
+        imageMapping.put(Square.wall, IMAGES_DIR.getAbsolutePath() + File.separator + "wall.gif");
+        imageMapping.put(Square.box, IMAGES_DIR.getAbsolutePath() + File.separator + "box.gif");
+        imageMapping.put(Square.shelf, IMAGES_DIR.getAbsolutePath() + File.separator + "shelf.gif");
+        imageMapping.put(Square.boxOnShelf, IMAGES_DIR.getAbsolutePath() + File.separator + "boxOnShelf.gif");
 
         //direction to image of worker
         agentMapping = new HashMap<String, String>();
-        agentMapping.put("up", "agent-up.gif");
-        agentMapping.put("down", "agent-down.gif");
-        agentMapping.put("left", "agent-left.gif");
-        agentMapping.put("right", "agent-right.gif");
+        agentMapping.put("up", IMAGES_DIR.getAbsolutePath() + File.separator + "agent-up.gif");
+        agentMapping.put("down", IMAGES_DIR.getAbsolutePath() + File.separator + "agent-down.gif");
+        agentMapping.put("left", IMAGES_DIR.getAbsolutePath() + File.separator + "agent-left.gif");
+        agentMapping.put("right", IMAGES_DIR.getAbsolutePath() + File.separator + "agent-right.gif");
 
         // key string to direction 
         keyMapping = new HashMap<String,String>();
